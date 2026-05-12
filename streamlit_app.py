@@ -140,8 +140,13 @@ with tab1:
 
                 # filter to the 8 selected WoE columns that are present
                 available_woe = [c for c in WOE_COLS_LR if c in data.columns]
-                X_train = data[available_woe]
+
+                # Replace inf/-inf with NaN, then fill NaN with 0 (neutral WoE)
+                X_train = data[available_woe].replace([np.inf, -np.inf], np.nan).fillna(0)
                 y_train = data["good_bad"]
+
+                # Drop any remaining all-NaN columns
+                X_train = X_train.astype(float)
 
                 lr = LogisticRegression(max_iter=1000, random_state=42)
                 lr.fit(X_train, y_train)
@@ -200,7 +205,8 @@ with tab2:
                         pass
 
                 available_woe = [c for c in WOE_COLS_LR if c in eval_df.columns]
-                eval_df["pred_lr"] = st.session_state["model"].predict_proba(eval_df[available_woe])[:, 1]
+                X_eval = eval_df[available_woe].replace([np.inf, -np.inf], np.nan).fillna(0).astype(float)
+                eval_df["pred_lr"] = st.session_state["model"].predict_proba(X_eval)[:, 1]
                 eval_df = assign_grade(eval_df)
                 st.session_state["eval_scored"] = eval_df
 
@@ -344,4 +350,3 @@ with tab4:
         if st.button("🗑️ Clear chat"):
             st.session_state["chat_history"] = []
             st.rerun()
-
