@@ -17,3 +17,16 @@ A simple Streamlit app template for you to modify!
    ```
    $ streamlit run streamlit_app.py
    ```
+
+---
+
+## Deploying the app
+
+The easiest option is Streamlit Community Cloud.
+
+1. Push your repo to GitHub.
+2. Go to https://streamlit.io/cloud and connect your GitHub account.
+3. Select this repository and deploy the `main` branch.
+4. Streamlit Cloud will install packages from `requirements.txt` and launch `streamlit_app.py`.
+
+If your app uses the Anthropic key, add it under Settings > Secrets in Streamlit Cloud and reference it in the app securely.
